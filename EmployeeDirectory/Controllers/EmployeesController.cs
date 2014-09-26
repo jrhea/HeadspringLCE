@@ -6,18 +6,60 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Reflection;
+using System.ComponentModel.DataAnnotations;
 using EmployeeDirectory.Models;
+using EmployeeDirectory.CustomAttributes;
+using EmployeeDirectory.Utilities;
 
 namespace EmployeeDirectory.Controllers
 {
     public class EmployeesController : Controller
     {
-        private EmployeeDirectoryModel db = new EmployeeDirectoryModel();
+        private EmployeeDirectoryModel _db = new EmployeeDirectoryModel();
+        private List<String> _categoryList;
+
+        public EmployeesController()
+        {
+            _categoryList = null;
+        }
 
         // GET: Employees
-        public ActionResult Index()
+        public ActionResult Index(string category, string searchString)
         {
-            var employees = db.Employees.Include(e => e.JobTitle).Include(e => e.Location);
+            Type type = typeof(Employee);
+            if (_categoryList == null)
+            {
+                _categoryList = type.getMatchingPropertyNames<Searchable,Boolean>(true);
+            }
+            
+
+            ViewBag.Category = new SelectList(_categoryList);
+
+            var employees = from e in _db.Employees
+                            select e;
+
+            if (!String.IsNullOrEmpty(category) && !String.IsNullOrEmpty(searchString))
+            {
+                switch(category)
+                {
+
+                    case "Last Name":
+                        employees = employees.Where(s => s.LastName.Contains(searchString));
+                        break;
+                    case "First Name":
+                        employees = employees.Where(s => s.FirstName.Contains(searchString));
+                        break;
+                    case "Job Title":
+                        employees = employees.Where(s => s.JobTitle.Description.Contains(searchString));
+                        break;
+                    case "Location":
+                        employees = employees.Where(s => s.Location.Description.Contains(searchString));
+                        break;
+                }
+
+            } 
+
             return View(employees.ToList());
         }
 
@@ -28,7 +70,7 @@ namespace EmployeeDirectory.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Employee employee = db.Employees.Find(id);
+            Employee employee = _db.Employees.Find(id);
             if (employee == null)
             {
                 return HttpNotFound();
@@ -39,8 +81,8 @@ namespace EmployeeDirectory.Controllers
         // GET: Employees/Create
         public ActionResult Create()
         {
-            ViewBag.JobTitleId = new SelectList(db.JobTitles, "Id", "Description");
-            ViewBag.LocationId = new SelectList(db.Locations, "Id", "Description");
+            ViewBag.JobTitleId = new SelectList(_db.JobTitles, "Id", "Description");
+            ViewBag.LocationId = new SelectList(_db.Locations, "Id", "Description");
             return View();
         }
 
@@ -53,13 +95,13 @@ namespace EmployeeDirectory.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Employees.Add(employee);
-                db.SaveChanges();
+                _db.Employees.Add(employee);
+                _db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.JobTitleId = new SelectList(db.JobTitles, "Id", "Description", employee.JobTitleId);
-            ViewBag.LocationId = new SelectList(db.Locations, "Id", "Description", employee.LocationId);
+            ViewBag.JobTitleId = new SelectList(_db.JobTitles, "Id", "Description", employee.JobTitleId);
+            ViewBag.LocationId = new SelectList(_db.Locations, "Id", "Description", employee.LocationId);
             return View(employee);
         }
 
@@ -70,13 +112,13 @@ namespace EmployeeDirectory.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Employee employee = db.Employees.Find(id);
+            Employee employee = _db.Employees.Find(id);
             if (employee == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.JobTitleId = new SelectList(db.JobTitles, "Id", "Description", employee.JobTitleId);
-            ViewBag.LocationId = new SelectList(db.Locations, "Id", "Description", employee.LocationId);
+            ViewBag.JobTitleId = new SelectList(_db.JobTitles, "Id", "Description", employee.JobTitleId);
+            ViewBag.LocationId = new SelectList(_db.Locations, "Id", "Description", employee.LocationId);
             return View(employee);
         }
 
@@ -89,12 +131,12 @@ namespace EmployeeDirectory.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(employee).State = EntityState.Modified;
-                db.SaveChanges();
+                _db.Entry(employee).State = EntityState.Modified;
+                _db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.JobTitleId = new SelectList(db.JobTitles, "Id", "Description", employee.JobTitleId);
-            ViewBag.LocationId = new SelectList(db.Locations, "Id", "Description", employee.LocationId);
+            ViewBag.JobTitleId = new SelectList(_db.JobTitles, "Id", "Description", employee.JobTitleId);
+            ViewBag.LocationId = new SelectList(_db.Locations, "Id", "Description", employee.LocationId);
             return View(employee);
         }
 
@@ -105,7 +147,7 @@ namespace EmployeeDirectory.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Employee employee = db.Employees.Find(id);
+            Employee employee = _db.Employees.Find(id);
             if (employee == null)
             {
                 return HttpNotFound();
@@ -118,9 +160,9 @@ namespace EmployeeDirectory.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Employee employee = db.Employees.Find(id);
-            db.Employees.Remove(employee);
-            db.SaveChanges();
+            Employee employee = _db.Employees.Find(id);
+            _db.Employees.Remove(employee);
+            _db.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -128,7 +170,7 @@ namespace EmployeeDirectory.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _db.Dispose();
             }
             base.Dispose(disposing);
         }
