@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 using EmployeeDirectory.Models;
 using EmployeeDirectory.CustomAttributes;
 using EmployeeDirectory.Utilities;
@@ -17,50 +18,55 @@ namespace EmployeeDirectory.Controllers
     public class EmployeesController : Controller
     {
         private EmployeeDirectoryModel _db = new EmployeeDirectoryModel();
-        private List<String> _categoryList;
-
+        private List<String> _categoryDisplayNames;
         public EmployeesController()
         {
-            _categoryList = null;
+            _categoryDisplayNames = null;
         }
 
         // GET: Employees
         public ActionResult Index(string category, string searchString)
         {
+            ViewResult result;
             Type type = typeof(Employee);
-            if (_categoryList == null)
+            if (_categoryDisplayNames == null)
             {
-                _categoryList = type.getMatchingPropertyNames<Searchable,Boolean>(true);
+                //Find properties of Employee that have SearchableAttribute with Value = true
+                List<PropertyInfo> propList1 = type.getMatchingProperties<Searchable,Boolean>(true);
+                //Find properties of Employee that have DisplayAttribute
+                List<PropertyInfo> propList2 = type.getMatchingProperties<DisplayNameAttribute>();
+                //Find the intersection of the two lists 
+                 List<PropertyInfo> categoryPropInfos = propList1.Intersect(propList2).ToList<PropertyInfo>();
+                //Get list of user friendly names for properties
+                 _categoryDisplayNames = categoryPropInfos.Select(x => x.GetCustomAttribute<DisplayNameAttribute>().DisplayName).ToList<String>();
             }
-            
 
-            ViewBag.Category = new SelectList(_categoryList);
+
+            ViewBag.Category = new SelectList(_categoryDisplayNames);
 
             var employees = from e in _db.Employees
                             select e;
-
+            
             if (!String.IsNullOrEmpty(category) && !String.IsNullOrEmpty(searchString))
             {
-                switch(category)
+                List<Employee> matches = new List<Employee>();
+                PropertyInfo info = type.getMatchingProperties<DisplayNameAttribute, String>(category, "DisplayName").First();
+                //Find the Employee objects with property that matches criteria
+                foreach (Employee employee in employees)
                 {
-
-                    case "Last Name":
-                        employees = employees.Where(s => s.LastName.Contains(searchString));
-                        break;
-                    case "First Name":
-                        employees = employees.Where(s => s.FirstName.Contains(searchString));
-                        break;
-                    case "Job Title":
-                        employees = employees.Where(s => s.JobTitle.Description.Contains(searchString));
-                        break;
-                    case "Location":
-                        employees = employees.Where(s => s.Location.Description.Contains(searchString));
-                        break;
+                    if(info.GetValue(employee).ToString().Contains(searchString))
+                    {
+                        matches.Add(employee);
+                    }
                 }
+                result = View(matches);
+            }
+            else
+            {
 
-            } 
-
-            return View(employees.ToList());
+                result = View(employees);
+            }
+            return result;
         }
 
         // GET: Employees/Details/5

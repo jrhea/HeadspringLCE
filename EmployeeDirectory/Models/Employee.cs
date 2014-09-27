@@ -5,6 +5,7 @@ namespace EmployeeDirectory.Models
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
+    using System.ComponentModel;
     using EmployeeDirectory.CustomAttributes;
 
     [Table("Employee")]
@@ -15,30 +16,30 @@ namespace EmployeeDirectory.Models
         [Required(ErrorMessage = "First Name is required.")]
         [RegularExpression(@"^[a-zA-Z''-'\s]{1,40}$", ErrorMessage =
             "Numbers and special characters are not allowed in the name.")]
-        [Display(Name = "Last Name")]
+        [DisplayName("Last Name")]
         [Searchable(true)]
         public string LastName { get; set; }
 
         [Required(ErrorMessage = "First Name is required.")]
         [RegularExpression(@"^[a-zA-Z''-'\s]{1,40}$", ErrorMessage =
             "Numbers and special characters are not allowed in the name.")]
-        [Display(Name = "First Name")]
+        [DisplayName("First Name")]
         [FilterUIHintAttribute("Searchable")]
         [Searchable(true)]
         public string FirstName { get; set; }
 
         [StringLength(15)]
-        [Display(Name = "Work Phone")]
+        [DisplayName("Work Phone")]
         [Searchable(false)]
         public string WorkPhone { get; set; }
 
         [StringLength(15)]
-        [Display(Name = "Cell Phone")]
+        [DisplayName("Cell Phone")]
         [Searchable(false)]
         public string CellPhone { get; set; }
 
         [StringLength(15)]
-        [Display(Name = "Home Phone")]
+        [DisplayName("Home Phone")]
         [Searchable(false)]
         public string HomePhone { get; set; }
 
@@ -46,18 +47,35 @@ namespace EmployeeDirectory.Models
         [Searchable(false)]
         public string Email { get; set; }
 
+        [DisplayName("Job Title")]
+        [FilterUIHintAttribute("Searchable")]
+        [Searchable(true)]
+        public virtual string JobTitleValue
+        { 
+            get
+            {
+                return JobTitle.Description;
+            }
+        }
+
+
+         [DisplayName("Location")]
+         [FilterUIHintAttribute("Searchable")]
+         [Searchable(true)]
+        public virtual string LocationValue 
+         {
+             get
+             {
+                 return Location.Description;
+             }
+         }
+
         public int JobTitleId { get; set; }
 
         public int LocationId { get; set; }
-
-        [Display(Name = "Job Title")]
-        [FilterUIHintAttribute("Searchable")]
-        [Searchable(true)]
+        
         public virtual JobTitle JobTitle { get; set; }
 
-         [Display(Name = "Location")]
-         [FilterUIHintAttribute("Searchable")]
-         [Searchable(true)]
         public virtual Location Location { get; set; }
     }
 }
