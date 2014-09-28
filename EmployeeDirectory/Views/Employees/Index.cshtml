@@ -1,4 +1,4 @@
-﻿@model IEnumerable<EmployeeDirectory.Models.Employee>
+﻿@model IEnumerable<EmployeeData.IEmployee>
 
 @{
     ViewBag.Title = "Index";
@@ -38,10 +38,10 @@
                     @Html.DisplayNameFor(model => model.FirstName)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.JobTitle.Description)
+                    @Html.DisplayNameFor(model => model.JobTitle)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Location.Description)
+                    @Html.DisplayNameFor(model => model.Location)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.WorkPhone)
@@ -68,10 +68,10 @@
                         @Html.DisplayFor(modelItem => item.FirstName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.JobTitle.Description)
+                        @Html.DisplayFor(modelItem => item.JobTitle)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Location.Description)
+                        @Html.DisplayFor(modelItem => item.Location)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.WorkPhone)

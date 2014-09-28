@@ -1,4 +1,4 @@
-﻿@model EmployeeDirectory.Models.Employee
+﻿@model CompositeModel
 
 @{
     ViewBag.Title = "Details";
@@ -8,75 +8,83 @@
 
 <div>
     <h4>Employee</h4>
-    <hr />
+    <hr style="border-color:#df691a" />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.JobTitle.Description)
+            @Html.DisplayNameFor(model => model.CurrentEmployee.JobTitle)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.JobTitle.Description)
+            @Html.DisplayFor(model => model.CurrentEmployee.JobTitle)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Location.Description)
+            @Html.DisplayNameFor(model => model.CurrentEmployee.Location)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Location.Description)
+            @Html.DisplayFor(model => model.CurrentEmployee.Location)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.LastName)
+            @Html.DisplayNameFor(model => model.CurrentEmployee.LastName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.LastName)
+            @Html.DisplayFor(model => model.CurrentEmployee.LastName)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.FirstName)
+            @Html.DisplayNameFor(model => model.CurrentEmployee.FirstName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.FirstName)
+            @Html.DisplayFor(model => model.CurrentEmployee.FirstName)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.WorkPhone)
+            @Html.DisplayNameFor(model => model.CurrentEmployee.WorkPhone)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.WorkPhone)
+            @Html.DisplayFor(model => model.CurrentEmployee.WorkPhone)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.CellPhone)
+            @Html.DisplayNameFor(model => model.CurrentEmployee.CellPhone)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.CellPhone)
+            @Html.DisplayFor(model => model.CurrentEmployee.CellPhone)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.HomePhone)
+            @Html.DisplayNameFor(model => model.CurrentEmployee.HomePhone)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.HomePhone)
+            @Html.DisplayFor(model => model.CurrentEmployee.HomePhone)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Email)
+            @Html.DisplayNameFor(model => model.CurrentEmployee.Email)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Email)
+            @Html.DisplayFor(model => model.CurrentEmployee.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CurrentRole.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CurrentRole.Description)
         </dd>
 
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.CurrentEmployee.Id }) |
     @Html.ActionLink("Back to List", "Index")
 </p>

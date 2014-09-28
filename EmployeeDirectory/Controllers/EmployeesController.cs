@@ -9,26 +9,33 @@ using System.Web.Mvc;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
-using EmployeeDirectory.Models;
-using EmployeeDirectory.CustomAttributes;
+using EmployeeData;
+using EmployeeData.CustomAttributes;
 using EmployeeDirectory.Utilities;
 
 namespace EmployeeDirectory.Controllers
 {
     public class EmployeesController : Controller
     {
-        private EmployeeDirectoryModel _db = new EmployeeDirectoryModel();
         private List<String> _categoryDisplayNames;
+        EmployeeServiceRef.EmployeeServiceClient _esc;
+        CompositeModel _compositeModel;
+
         public EmployeesController()
         {
             _categoryDisplayNames = null;
+            _compositeModel = new CompositeModel();
+            _esc = new EmployeeServiceRef.EmployeeServiceClient();
         }
 
         // GET: Employees
         public ActionResult Index(string category, string searchString)
         {
             ViewResult result;
-            Type type = typeof(Employee);
+            Type type = typeof(EmployeeData.IEmployee);
+
+            //This is just a clever way of using Reflection and Extension methods 
+            //in order to not have to maintain a list of "Searchable" properties
             if (_categoryDisplayNames == null)
             {
                 //Find properties of Employee that have SearchableAttribute with Value = true
@@ -36,23 +43,22 @@ namespace EmployeeDirectory.Controllers
                 //Find properties of Employee that have DisplayAttribute
                 List<PropertyInfo> propList2 = type.getMatchingProperties<DisplayNameAttribute>();
                 //Find the intersection of the two lists 
-                 List<PropertyInfo> categoryPropInfos = propList1.Intersect(propList2).ToList<PropertyInfo>();
+                List<PropertyInfo> categoryPropInfos = propList1.Intersect(propList2).ToList<PropertyInfo>();
                 //Get list of user friendly names for properties
                  _categoryDisplayNames = categoryPropInfos.Select(x => x.GetCustomAttribute<DisplayNameAttribute>().DisplayName).ToList<String>();
             }
+           
+           
+             ViewBag.Category = new SelectList(_categoryDisplayNames);
+           
+             var employees = _esc.GetAllEmployees().AsQueryable();
 
-
-            ViewBag.Category = new SelectList(_categoryDisplayNames);
-
-            var employees = from e in _db.Employees
-                            select e;
-            
+            //Find the Employee objects with property that matches criteria
             if (!String.IsNullOrEmpty(category) && !String.IsNullOrEmpty(searchString))
             {
-                List<Employee> matches = new List<Employee>();
+                List<IEmployee> matches = new List<IEmployee>();
                 PropertyInfo info = type.getMatchingProperties<DisplayNameAttribute, String>(category, "DisplayName").First();
-                //Find the Employee objects with property that matches criteria
-                foreach (Employee employee in employees)
+                foreach (IEmployee employee in employees)
                 {
                     if(info.GetValue(employee).ToString().Contains(searchString))
                     {
@@ -63,7 +69,9 @@ namespace EmployeeDirectory.Controllers
             }
             else
             {
-
+                _compositeModel.Employees = employees.ToList<IEmployee>();
+                _compositeModel.Roles = _esc.GetAllRoles();
+                Session["Composite"] = _compositeModel;
                 result = View(employees);
             }
             return result;
@@ -76,19 +84,20 @@ namespace EmployeeDirectory.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Employee employee = _db.Employees.Find(id);
-            if (employee == null)
+            _compositeModel = (CompositeModel)Session["Composite"];
+            _compositeModel.CurrentEmployee = _esc.GetEmployee(id.Value);
+            if (_compositeModel.CurrentEmployee == null)
             {
                 return HttpNotFound();
             }
-            return View(employee);
+            return View(_compositeModel);
         }
 
         // GET: Employees/Create
         public ActionResult Create()
         {
-            ViewBag.JobTitleId = new SelectList(_db.JobTitles, "Id", "Description");
-            ViewBag.LocationId = new SelectList(_db.Locations, "Id", "Description");
+            _compositeModel = (CompositeModel)Session["Composite"];
+            ViewBag.Role = new SelectList(_compositeModel.Roles, "Id", "Description", 0);
             return View();
         }
 
@@ -97,18 +106,17 @@ namespace EmployeeDirectory.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,LastName,FirstName,WorkPhone,CellPhone,HomePhone,Email,JobTitleId,LocationId")] Employee employee)
+        public ActionResult Create([Bind(Include = "Id,LastName,FirstName,WorkPhone,CellPhone,HomePhone,Email,JobTitle,Location,RoleId")] Employee employee)
         {
+            _compositeModel = (CompositeModel)Session["Composite"];
+            _compositeModel.CurrentEmployee = employee;
             if (ModelState.IsValid)
             {
-                _db.Employees.Add(employee);
-                _db.SaveChanges();
+                _esc.CreateEmployee(_compositeModel.CurrentEmployee);
                 return RedirectToAction("Index");
             }
-
-            ViewBag.JobTitleId = new SelectList(_db.JobTitles, "Id", "Description", employee.JobTitleId);
-            ViewBag.LocationId = new SelectList(_db.Locations, "Id", "Description", employee.LocationId);
-            return View(employee);
+            
+            return View(_compositeModel);
         }
 
         // GET: Employees/Edit/5
@@ -118,14 +126,15 @@ namespace EmployeeDirectory.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Employee employee = _db.Employees.Find(id);
-            if (employee == null)
+            _compositeModel = (CompositeModel)Session["Composite"];
+            _compositeModel.CurrentEmployee = _esc.GetEmployee(id.Value);
+            if (_compositeModel.CurrentEmployee == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.JobTitleId = new SelectList(_db.JobTitles, "Id", "Description", employee.JobTitleId);
-            ViewBag.LocationId = new SelectList(_db.Locations, "Id", "Description", employee.LocationId);
-            return View(employee);
+            ViewBag.Role = new SelectList(_compositeModel.Roles, "Id", "Description", 0);
+
+            return View(_compositeModel.CurrentEmployee);
         }
 
         // POST: Employees/Edit/5
@@ -133,16 +142,14 @@ namespace EmployeeDirectory.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,LastName,FirstName,WorkPhone,CellPhone,HomePhone,Email,JobTitleId,LocationId")] Employee employee)
+        public ActionResult Edit([Bind(Include = "Id,LastName,FirstName,WorkPhone,CellPhone,HomePhone,Email,JobTitle,Location,RoleId")] Employee employee)
         {
             if (ModelState.IsValid)
             {
-                _db.Entry(employee).State = EntityState.Modified;
-                _db.SaveChanges();
+                _esc.UpdateEmployee(employee);
                 return RedirectToAction("Index");
             }
-            ViewBag.JobTitleId = new SelectList(_db.JobTitles, "Id", "Description", employee.JobTitleId);
-            ViewBag.LocationId = new SelectList(_db.Locations, "Id", "Description", employee.LocationId);
+
             return View(employee);
         }
 
@@ -153,7 +160,7 @@ namespace EmployeeDirectory.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Employee employee = _db.Employees.Find(id);
+            IEmployee employee = _esc.GetEmployee(id.Value);
             if (employee == null)
             {
                 return HttpNotFound();
@@ -166,9 +173,8 @@ namespace EmployeeDirectory.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Employee employee = _db.Employees.Find(id);
-            _db.Employees.Remove(employee);
-            _db.SaveChanges();
+            IEmployee employee = _esc.GetEmployee(id);
+            _esc.DeleteEmployee(employee);
             return RedirectToAction("Index");
         }
 
@@ -176,7 +182,7 @@ namespace EmployeeDirectory.Controllers
         {
             if (disposing)
             {
-                _db.Dispose();
+               // _db.Dispose();
             }
             base.Dispose(disposing);
         }
