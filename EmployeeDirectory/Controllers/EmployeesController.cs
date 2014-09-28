@@ -9,9 +9,13 @@ using System.Web.Mvc;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using System.Web.Security;
+using System.Security.Principal;
 using EmployeeData;
 using EmployeeData.CustomAttributes;
 using EmployeeDirectory.Utilities;
+using System.Diagnostics;
+
 
 namespace EmployeeDirectory.Controllers
 {
@@ -19,13 +23,12 @@ namespace EmployeeDirectory.Controllers
     {
         private List<String> _categoryDisplayNames;
         EmployeeServiceRef.EmployeeServiceClient _esc;
-        CompositeModel _compositeModel;
+        ModelHelper _modelHelper;
 
         public EmployeesController()
         {
             _categoryDisplayNames = null;
-            _compositeModel = new CompositeModel();
-            _esc = new EmployeeServiceRef.EmployeeServiceClient();
+            InitializeSession();
         }
 
         // GET: Employees
@@ -33,7 +36,7 @@ namespace EmployeeDirectory.Controllers
         {
             ViewResult result;
             Type type = typeof(EmployeeData.IEmployee);
-
+            
             //This is just a clever way of using Reflection and Extension methods 
             //in order to not have to maintain a list of "Searchable" properties
             if (_categoryDisplayNames == null)
@@ -69,9 +72,7 @@ namespace EmployeeDirectory.Controllers
             }
             else
             {
-                _compositeModel.Employees = employees.ToList<IEmployee>();
-                _compositeModel.Roles = _esc.GetAllRoles();
-                Session["Composite"] = _compositeModel;
+                Session["ModelHelper"] = _modelHelper;
                 result = View(employees);
             }
             return result;
@@ -84,20 +85,19 @@ namespace EmployeeDirectory.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            _compositeModel = (CompositeModel)Session["Composite"];
-            _compositeModel.CurrentEmployee = _esc.GetEmployee(id.Value);
-            if (_compositeModel.CurrentEmployee == null)
+            _modelHelper.Employee = _esc.GetEmployee(id.Value);
+            if (_modelHelper.Employee == null)
             {
                 return HttpNotFound();
             }
-            return View(_compositeModel);
+            return View(_modelHelper);
         }
 
         // GET: Employees/Create
+        [CustomAuthorize(Roles = "HR")]
         public ActionResult Create()
         {
-            _compositeModel = (CompositeModel)Session["Composite"];
-            ViewBag.Role = new SelectList(_compositeModel.Roles, "Id", "Description", 0);
+            ViewBag.Role = new SelectList(_modelHelper.Roles, "Id", "Description", 0);
             return View();
         }
 
@@ -106,35 +106,35 @@ namespace EmployeeDirectory.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(Roles = "HR")]
         public ActionResult Create([Bind(Include = "Id,LastName,FirstName,WorkPhone,CellPhone,HomePhone,Email,JobTitle,Location,RoleId")] Employee employee)
         {
-            _compositeModel = (CompositeModel)Session["Composite"];
-            _compositeModel.CurrentEmployee = employee;
+            _modelHelper.Employee = employee;
             if (ModelState.IsValid)
             {
-                _esc.CreateEmployee(_compositeModel.CurrentEmployee);
+                _esc.CreateEmployee(_modelHelper.Employee);
                 return RedirectToAction("Index");
             }
             
-            return View(_compositeModel);
+            return View(_modelHelper);
         }
 
         // GET: Employees/Edit/5
+        [CustomAuthorize(Roles = "HR")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            _compositeModel = (CompositeModel)Session["Composite"];
-            _compositeModel.CurrentEmployee = _esc.GetEmployee(id.Value);
-            if (_compositeModel.CurrentEmployee == null)
+            _modelHelper.Employee = _esc.GetEmployee(id.Value);
+            if (_modelHelper.Employee == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.Role = new SelectList(_compositeModel.Roles, "Id", "Description", 0);
+            ViewBag.Role = new SelectList(_modelHelper.Roles, "Id", "Description", 0);
 
-            return View(_compositeModel.CurrentEmployee);
+            return View(_modelHelper.Employee);
         }
 
         // POST: Employees/Edit/5
@@ -142,6 +142,7 @@ namespace EmployeeDirectory.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(Roles = "HR")]
         public ActionResult Edit([Bind(Include = "Id,LastName,FirstName,WorkPhone,CellPhone,HomePhone,Email,JobTitle,Location,RoleId")] Employee employee)
         {
             if (ModelState.IsValid)
@@ -154,6 +155,7 @@ namespace EmployeeDirectory.Controllers
         }
 
         // GET: Employees/Delete/5
+        [CustomAuthorize(Roles = "HR")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -171,6 +173,7 @@ namespace EmployeeDirectory.Controllers
         // POST: Employees/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(Roles = "HR")]
         public ActionResult DeleteConfirmed(int id)
         {
             IEmployee employee = _esc.GetEmployee(id);
@@ -178,12 +181,40 @@ namespace EmployeeDirectory.Controllers
             return RedirectToAction("Index");
         }
 
+        protected void InitializeSession()
+        {
+            _esc = new EmployeeServiceRef.EmployeeServiceClient();
+            if (Session != null)
+            {
+                _modelHelper = (ModelHelper)Session["ModelHelper"];
+            }
+            else
+            {
+                _modelHelper = new ModelHelper();
+            }
+            _modelHelper.Roles = _esc.GetAllRoles();
+            EstablishSessionIdentity("1001");
+        }
+
+        public void EstablishSessionIdentity(string username = "")
+        {
+            try
+            {
+                if (username.Equals(String.Empty))
+                {
+                    username = WindowsIdentity.GetCurrent().Name.Split(new string[1] { "\\" }, StringSplitOptions.None)[1];
+                }
+                _modelHelper.SessionIdentity = _esc.GetEmployee(Convert.ToInt32(username));
+            }
+            catch (System.FormatException)
+            {
+                _modelHelper.CreateGuestIdentity();
+            }
+        }
+
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-               // _db.Dispose();
-            }
+            _esc.Close();
             base.Dispose(disposing);
         }
     }
