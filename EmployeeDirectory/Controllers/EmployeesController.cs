@@ -11,6 +11,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using System.Web.Security;
 using System.Security.Principal;
+using PagedList;
 using EmployeeData;
 using EmployeeData.CustomAttributes;
 using EmployeeDirectory.Utilities;
@@ -22,21 +23,43 @@ namespace EmployeeDirectory.Controllers
     public class EmployeesController : Controller
     {
         private List<String> _categoryDisplayNames;
+        private string _username;
         EmployeeServiceRef.EmployeeServiceClient _esc;
         ModelHelper _modelHelper;
 
         public EmployeesController()
         {
             _categoryDisplayNames = null;
+            _username = "";
+            InitializeSession();
+        }
+
+        public EmployeesController(string username)
+        {
+            _categoryDisplayNames = null;
+            _username = username;
             InitializeSession();
         }
 
         // GET: Employees
-        public ActionResult Index(string category, string searchString)
+        public ActionResult Index(string category, string currentFilter, string searchString, int? page)
         {
             ViewResult result;
-            Type type = typeof(EmployeeData.IEmployee);
-            
+            Type type = typeof(EmployeeData.Employee);
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+            ViewBag.Category = category;
+
             //This is just a clever way of using Reflection and Extension methods 
             //in order to not have to maintain a list of "Searchable" properties
             if (_categoryDisplayNames == null)
@@ -59,22 +82,23 @@ namespace EmployeeDirectory.Controllers
             //Find the Employee objects with property that matches criteria
             if (!String.IsNullOrEmpty(category) && !String.IsNullOrEmpty(searchString))
             {
-                List<IEmployee> matches = new List<IEmployee>();
+                List<Employee> matches = new List<Employee>();
                 PropertyInfo info = type.getMatchingProperties<DisplayNameAttribute, String>(category, "DisplayName").First();
-                foreach (IEmployee employee in employees)
+                foreach (Employee employee in employees)
                 {
                     if(info.GetValue(employee).ToString().Contains(searchString))
                     {
                         matches.Add(employee);
                     }
                 }
-                result = View(matches);
+                result = View(matches.ToPagedList(pageNumber,pageSize));
             }
             else
             {
                 Session["ModelHelper"] = _modelHelper;
-                result = View(employees);
+                result = View(employees.ToPagedList(pageNumber,pageSize));
             }
+
             return result;
         }
 
@@ -162,7 +186,7 @@ namespace EmployeeDirectory.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            IEmployee employee = _esc.GetEmployee(id.Value);
+            Employee employee = _esc.GetEmployee(id.Value);
             if (employee == null)
             {
                 return HttpNotFound();
@@ -176,7 +200,7 @@ namespace EmployeeDirectory.Controllers
         [CustomAuthorize(Roles = "HR")]
         public ActionResult DeleteConfirmed(int id)
         {
-            IEmployee employee = _esc.GetEmployee(id);
+            Employee employee = _esc.GetEmployee(id);
             _esc.DeleteEmployee(employee);
             return RedirectToAction("Index");
         }
@@ -193,18 +217,18 @@ namespace EmployeeDirectory.Controllers
                 _modelHelper = new ModelHelper();
             }
             _modelHelper.Roles = _esc.GetAllRoles();
-            EstablishSessionIdentity("1001");
+            EstablishSessionIdentity();
         }
 
-        public void EstablishSessionIdentity(string username = "")
+        public void EstablishSessionIdentity()
         {
             try
             {
-                if (username.Equals(String.Empty))
+                if (_username.Equals(String.Empty))
                 {
-                    username = WindowsIdentity.GetCurrent().Name.Split(new string[1] { "\\" }, StringSplitOptions.None)[1];
+                    _username = WindowsIdentity.GetCurrent().Name.Split(new string[1] { "\\" }, StringSplitOptions.None)[1];
                 }
-                _modelHelper.SessionIdentity = _esc.GetEmployee(Convert.ToInt32(username));
+                _modelHelper.SessionIdentity = _esc.GetEmployee(Convert.ToInt32(_username));
             }
             catch (System.FormatException)
             {

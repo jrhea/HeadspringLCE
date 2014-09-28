@@ -9,15 +9,19 @@ namespace EmployeeDAL
 {
     public class EmployeeDataAccess
     {
-        private EmployeeModel _db = new EmployeeModel();
-        public List<IEmployee> GetAllEmployees()
+        private EmployeeModel _db;
+        public EmployeeDataAccess()
+        {
+            _db = new EmployeeModel("EmployeeModel");
+        }
+        public List<Employee> GetAllEmployees()
         {
             var result = from e in _db.Employees
             select e;
-            return result.ToList().Cast<IEmployee>().ToList();
+            return result.ToList();
         }
 
-        public IEmployee GetEmployee(int id)
+        public Employee GetEmployee(int id)
         {
             var result = _db.Employees.Find(id);
             return result;
@@ -30,18 +34,25 @@ namespace EmployeeDAL
             return result.ToList();
         }
 
-        public void CreateEmployee(IEmployee employee)
+        public int CreateEmployee(Employee employee)
         {
+            int result = -1;
             _db.Employees.Add((Employee)employee);
             _db.SaveChanges();
+            Employee test =_db.Entry(employee).Entity;
+            if (test != null)
+            {
+                result = test.Id;
+            }
+            return result;
         }
 
-        public void UpdateEmployee(IEmployee employee)
+        public void UpdateEmployee(Employee employee)
         {
             _db.Entry(employee).State = EntityState.Modified;
             _db.SaveChanges();
         }
-        public void DeleteEmployee(IEmployee employee)
+        public void DeleteEmployee(Employee employee)
         {
             _db.Employees.Attach((Employee)employee);
             _db.Employees.Remove((Employee)employee);

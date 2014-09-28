@@ -159,6 +159,8 @@
     <Content Include="Content\superhero.variables.less" />
     <Content Include="Properties\DataSources\EmployeeData.IEmployee.datasource" />
     <Content Include="Properties\DataSources\EmployeeData.Role.datasource" />
+    <Content Include="Properties\DataSources\EmployeeData.EmployeeView.datasource" />
+    <Content Include="Properties\DataSources\EmployeeData.Employee.datasource" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

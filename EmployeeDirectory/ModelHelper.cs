@@ -7,9 +7,9 @@ namespace EmployeeDirectory
 {
     public class ModelHelper
     {
-        public IEmployee SessionIdentity { get; set; }
+        public Employee SessionIdentity { get; set; }
 
-        public IEmployee Employee { get; set; }
+        public Employee Employee { get; set; }
 
         public Role SessionIdentityRole
         {

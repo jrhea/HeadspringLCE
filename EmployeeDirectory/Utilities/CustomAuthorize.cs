@@ -10,6 +10,7 @@ namespace EmployeeDirectory.Utilities
 {
     public class CustomAuthorize : AuthorizeAttribute
     {
+
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
             bool result = false;

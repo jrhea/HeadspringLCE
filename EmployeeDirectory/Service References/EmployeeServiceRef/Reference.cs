@@ -16,17 +16,16 @@ namespace EmployeeDirectory.EmployeeServiceRef {
     public interface IEmployeeService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IEmployeeService/GetAllEmployees", ReplyAction="http://tempuri.org/IEmployeeService/GetAllEmployeesResponse")]
-        System.Collections.Generic.List<EmployeeData.IEmployee> GetAllEmployees();
+        System.Collections.Generic.List<EmployeeData.Employee> GetAllEmployees();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IEmployeeService/GetAllEmployees", ReplyAction="http://tempuri.org/IEmployeeService/GetAllEmployeesResponse")]
-        System.Threading.Tasks.Task<System.Collections.Generic.List<EmployeeData.IEmployee>> GetAllEmployeesAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.List<EmployeeData.Employee>> GetAllEmployeesAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IEmployeeService/GetEmployee", ReplyAction="http://tempuri.org/IEmployeeService/GetEmployeeResponse")]
-        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(EmployeeData.Employee))]
-        EmployeeData.IEmployee GetEmployee(int id);
+        EmployeeData.Employee GetEmployee(int id);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IEmployeeService/GetEmployee", ReplyAction="http://tempuri.org/IEmployeeService/GetEmployeeResponse")]
-        System.Threading.Tasks.Task<EmployeeData.IEmployee> GetEmployeeAsync(int id);
+        System.Threading.Tasks.Task<EmployeeData.Employee> GetEmployeeAsync(int id);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IEmployeeService/GetAllRoles", ReplyAction="http://tempuri.org/IEmployeeService/GetAllRolesResponse")]
         System.Collections.Generic.List<EmployeeData.Role> GetAllRoles();
@@ -35,25 +34,28 @@ namespace EmployeeDirectory.EmployeeServiceRef {
         System.Threading.Tasks.Task<System.Collections.Generic.List<EmployeeData.Role>> GetAllRolesAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IEmployeeService/CreateEmployee", ReplyAction="http://tempuri.org/IEmployeeService/CreateEmployeeResponse")]
-        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(EmployeeData.Employee))]
-        void CreateEmployee(EmployeeData.IEmployee employee);
+        int CreateEmployee(EmployeeData.Employee employee);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IEmployeeService/CreateEmployee", ReplyAction="http://tempuri.org/IEmployeeService/CreateEmployeeResponse")]
-        System.Threading.Tasks.Task CreateEmployeeAsync(EmployeeData.IEmployee employee);
+        System.Threading.Tasks.Task<int> CreateEmployeeAsync(EmployeeData.Employee employee);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IEmployeeService/UpdateEmployee", ReplyAction="http://tempuri.org/IEmployeeService/UpdateEmployeeResponse")]
-        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(EmployeeData.Employee))]
-        void UpdateEmployee(EmployeeData.IEmployee employee);
+        void UpdateEmployee(EmployeeData.Employee employee);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IEmployeeService/UpdateEmployee", ReplyAction="http://tempuri.org/IEmployeeService/UpdateEmployeeResponse")]
-        System.Threading.Tasks.Task UpdateEmployeeAsync(EmployeeData.IEmployee employee);
+        System.Threading.Tasks.Task UpdateEmployeeAsync(EmployeeData.Employee employee);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IEmployeeService/DeleteEmployee", ReplyAction="http://tempuri.org/IEmployeeService/DeleteEmployeeResponse")]
-        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(EmployeeData.Employee))]
-        void DeleteEmployee(EmployeeData.IEmployee employee);
+        void DeleteEmployee(EmployeeData.Employee employee);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IEmployeeService/DeleteEmployee", ReplyAction="http://tempuri.org/IEmployeeService/DeleteEmployeeResponse")]
-        System.Threading.Tasks.Task DeleteEmployeeAsync(EmployeeData.IEmployee employee);
+        System.Threading.Tasks.Task DeleteEmployeeAsync(EmployeeData.Employee employee);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IEmployeeService/ChangeDB", ReplyAction="http://tempuri.org/IEmployeeService/ChangeDBResponse")]
+        void ChangeDB(string connectionName);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IEmployeeService/ChangeDB", ReplyAction="http://tempuri.org/IEmployeeService/ChangeDBResponse")]
+        System.Threading.Tasks.Task ChangeDBAsync(string connectionName);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -83,19 +85,19 @@ namespace EmployeeDirectory.EmployeeServiceRef {
                 base(binding, remoteAddress) {
         }
         
-        public System.Collections.Generic.List<EmployeeData.IEmployee> GetAllEmployees() {
+        public System.Collections.Generic.List<EmployeeData.Employee> GetAllEmployees() {
             return base.Channel.GetAllEmployees();
         }
         
-        public System.Threading.Tasks.Task<System.Collections.Generic.List<EmployeeData.IEmployee>> GetAllEmployeesAsync() {
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<EmployeeData.Employee>> GetAllEmployeesAsync() {
             return base.Channel.GetAllEmployeesAsync();
         }
         
-        public EmployeeData.IEmployee GetEmployee(int id) {
+        public EmployeeData.Employee GetEmployee(int id) {
             return base.Channel.GetEmployee(id);
         }
         
-        public System.Threading.Tasks.Task<EmployeeData.IEmployee> GetEmployeeAsync(int id) {
+        public System.Threading.Tasks.Task<EmployeeData.Employee> GetEmployeeAsync(int id) {
             return base.Channel.GetEmployeeAsync(id);
         }
         
@@ -107,28 +109,36 @@ namespace EmployeeDirectory.EmployeeServiceRef {
             return base.Channel.GetAllRolesAsync();
         }
         
-        public void CreateEmployee(EmployeeData.IEmployee employee) {
-            base.Channel.CreateEmployee(employee);
+        public int CreateEmployee(EmployeeData.Employee employee) {
+            return base.Channel.CreateEmployee(employee);
         }
         
-        public System.Threading.Tasks.Task CreateEmployeeAsync(EmployeeData.IEmployee employee) {
+        public System.Threading.Tasks.Task<int> CreateEmployeeAsync(EmployeeData.Employee employee) {
             return base.Channel.CreateEmployeeAsync(employee);
         }
         
-        public void UpdateEmployee(EmployeeData.IEmployee employee) {
+        public void UpdateEmployee(EmployeeData.Employee employee) {
             base.Channel.UpdateEmployee(employee);
         }
         
-        public System.Threading.Tasks.Task UpdateEmployeeAsync(EmployeeData.IEmployee employee) {
+        public System.Threading.Tasks.Task UpdateEmployeeAsync(EmployeeData.Employee employee) {
             return base.Channel.UpdateEmployeeAsync(employee);
         }
         
-        public void DeleteEmployee(EmployeeData.IEmployee employee) {
+        public void DeleteEmployee(EmployeeData.Employee employee) {
             base.Channel.DeleteEmployee(employee);
         }
         
-        public System.Threading.Tasks.Task DeleteEmployeeAsync(EmployeeData.IEmployee employee) {
+        public System.Threading.Tasks.Task DeleteEmployeeAsync(EmployeeData.Employee employee) {
             return base.Channel.DeleteEmployeeAsync(employee);
+        }
+        
+        public void ChangeDB(string connectionName) {
+            base.Channel.ChangeDB(connectionName);
+        }
+        
+        public System.Threading.Tasks.Task ChangeDBAsync(string connectionName) {
+            return base.Channel.ChangeDBAsync(connectionName);
         }
     }
 }

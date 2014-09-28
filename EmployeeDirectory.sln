@@ -14,6 +14,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeDAL", "EmployeeDAL\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeData", "EmployeeData\EmployeeData.csproj", "{3C7C47E5-30EF-4762-BDE9-B984F434A92A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeDirectory.Tests", "EmployeeDirectory.Tests\EmployeeDirectory.Tests.csproj", "{1DE70667-6CD3-49F0-BC67-624AF4D8D3A4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{054CB60E-A6F1-41FD-A78F-6AB34548B9F8} = {054CB60E-A6F1-41FD-A78F-6AB34548B9F8}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +41,10 @@ Global
 		{3C7C47E5-30EF-4762-BDE9-B984F434A92A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C7C47E5-30EF-4762-BDE9-B984F434A92A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C7C47E5-30EF-4762-BDE9-B984F434A92A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DE70667-6CD3-49F0-BC67-624AF4D8D3A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DE70667-6CD3-49F0-BC67-624AF4D8D3A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DE70667-6CD3-49F0-BC67-624AF4D8D3A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DE70667-6CD3-49F0-BC67-624AF4D8D3A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

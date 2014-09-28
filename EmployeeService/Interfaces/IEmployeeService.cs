@@ -10,21 +10,20 @@ using EmployeeData;
 namespace EmployeeService.Interfaces
 {
     [ServiceContract]
-    [ServiceKnownType(typeof(Employee))]
     public interface IEmployeeService
     {
         [OperationContract]
-        List<IEmployee> GetAllEmployees();
+        List<Employee> GetAllEmployees();
         [OperationContract]
-        IEmployee GetEmployee(int id);
+        Employee GetEmployee(int id);
         [OperationContract]
         List<Role> GetAllRoles();
         [OperationContract]
-        void CreateEmployee(IEmployee employee);
+        int CreateEmployee(Employee employee);
         [OperationContract]
-        void UpdateEmployee(IEmployee employee);
+        void UpdateEmployee(Employee employee);
         [OperationContract]
-        void DeleteEmployee(IEmployee employee);
+        void DeleteEmployee(Employee employee);
 
     }
 

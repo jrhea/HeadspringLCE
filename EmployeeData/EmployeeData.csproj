@@ -51,7 +51,6 @@
     <Compile Include="CustomAttributes\IAttribute.cs" />
     <Compile Include="CustomAttributes\SearchableAttribute.cs" />
     <Compile Include="Employee.cs" />
-    <Compile Include="IEmployee.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Role.cs" />
   </ItemGroup>

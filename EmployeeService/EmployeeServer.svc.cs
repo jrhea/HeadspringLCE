@@ -10,20 +10,18 @@ using EmployeeData;
 using EmployeeService.Interfaces;
 namespace EmployeeService
 {
-    [KnownType(typeof(Employee))]
     public class EmployeeServer : IEmployeeService
     {
-        EmployeeDataAccess _employeeDAL = new EmployeeDataAccess();
+        EmployeeDataAccess _employeeDAL;
         public EmployeeServer()
         {
-           _employeeDAL = new EmployeeDataAccess();
+            _employeeDAL = new EmployeeDataAccess();
         }
-        public List<IEmployee> GetAllEmployees()
+        public List<Employee> GetAllEmployees()
         {
-            
             return _employeeDAL.GetAllEmployees();
         }
-        public IEmployee GetEmployee(int id)
+        public Employee GetEmployee(int id)
         {
             return _employeeDAL.GetEmployee(id);
         }
@@ -31,15 +29,15 @@ namespace EmployeeService
         {
             return _employeeDAL.GetAllRoles();
         }
-        public void CreateEmployee(IEmployee employee)
+        public int CreateEmployee(Employee employee)
         {
-            _employeeDAL.CreateEmployee(employee);
+           return _employeeDAL.CreateEmployee(employee);
         }
-        public void UpdateEmployee(IEmployee employee)
+        public void UpdateEmployee(Employee employee)
         {
             _employeeDAL.UpdateEmployee(employee);
         }
-        public void DeleteEmployee(IEmployee employee)
+        public void DeleteEmployee(Employee employee)
         {
             _employeeDAL.DeleteEmployee(employee);
         }

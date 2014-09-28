@@ -69,6 +69,14 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\CorporateDirectory.mdf" />
+    <Content Include="App_Data\CorporateDirectory_log.ldf">
+      <DependentUpon>CorporateDirectory.mdf</DependentUpon>
+    </Content>
+    <Content Include="App_Data\TestCorporateDirectory.mdf" />
+    <Content Include="App_Data\TestCorporateDirectory_log.ldf">
+      <DependentUpon>TestCorporateDirectory.mdf</DependentUpon>
+    </Content>
     <Content Include="EmployeeServer.svc" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -79,9 +87,7 @@
     <Compile Include="Interfaces\IEmployeeService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config" />
     <None Include="Web.Debug.config">

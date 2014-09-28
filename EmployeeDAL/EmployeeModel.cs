@@ -8,8 +8,8 @@ namespace EmployeeDAL
 
     public partial class EmployeeModel : DbContext
     {
-        public EmployeeModel()
-            : base("name=EmployeeModel")
+        public EmployeeModel(string connectionName)
+            : base("name=" + connectionName)
         {
         }
 
