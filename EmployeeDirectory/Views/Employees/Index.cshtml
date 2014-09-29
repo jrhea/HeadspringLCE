@@ -99,7 +99,7 @@
 <table class ="table-condensed">
     <tr>
         <th>
-                @Html.PagedListPager(Model, page => Url.Action("Index", new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }), PagedListRenderOptions.Classic)
+                @Html.PagedListPager(Model, page => Url.Action("Index", new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }), PagedListRenderOptions.Minimal)
         </th>
         <th>
             &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp

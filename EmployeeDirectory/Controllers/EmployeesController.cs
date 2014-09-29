@@ -68,7 +68,7 @@ namespace EmployeeDirectory.Controllers
         {
             ViewResult result;
             Type type = typeof(EmployeeData.Employee);
-            int pageSize = 3;
+            int pageSize = 6;
             int pageNumber = (page ?? 1);
             if (searchString != null)
             {
