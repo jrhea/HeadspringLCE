@@ -31,7 +31,7 @@ Shortcomings:
 There are plenty given the limited time my schedule (wife and kids) allowed me to work on it this weeked.  ;) That being said, I think you will see a little bit of what I can do.  Specifically, I really wanted to showoff the Pub-Sub pattern with WCF and show how to use callbacks to create live updating web apps.
 
 
-Project Documentation
+Project Documentation:
 ==
 
 Yes there is more than just this README.  Look in ./Documentation for EmployeeDirectory.chm.  This compiled help file contains all documentation for the project.
