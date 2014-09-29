@@ -14,7 +14,7 @@ namespace EmployeeDirectory.Tests.Security
     {
 
         [TestMethod]
-        public void CreateView()
+        public void CreateViewAccess()
         {
             var controller = new EmployeesController();
             var type = controller.GetType();
@@ -24,7 +24,7 @@ namespace EmployeeDirectory.Tests.Security
         }
 
         [TestMethod]
-        public void EditView()
+        public void EditViewAccess()
         {
             var controller = new EmployeesController();
             var type = controller.GetType();
@@ -34,7 +34,7 @@ namespace EmployeeDirectory.Tests.Security
         }
 
         [TestMethod]
-        public void DeleteView()
+        public void DeleteViewAccess()
         {
             var controller = new EmployeesController();
             var type = controller.GetType();
