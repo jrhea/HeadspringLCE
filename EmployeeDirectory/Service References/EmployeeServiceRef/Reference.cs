@@ -50,12 +50,6 @@ namespace EmployeeDirectory.EmployeeServiceRef {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IEmployeeService/DeleteEmployee", ReplyAction="http://tempuri.org/IEmployeeService/DeleteEmployeeResponse")]
         System.Threading.Tasks.Task DeleteEmployeeAsync(EmployeeData.Employee employee);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IEmployeeService/ChangeDB", ReplyAction="http://tempuri.org/IEmployeeService/ChangeDBResponse")]
-        void ChangeDB(string connectionName);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IEmployeeService/ChangeDB", ReplyAction="http://tempuri.org/IEmployeeService/ChangeDBResponse")]
-        System.Threading.Tasks.Task ChangeDBAsync(string connectionName);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -131,14 +125,6 @@ namespace EmployeeDirectory.EmployeeServiceRef {
         
         public System.Threading.Tasks.Task DeleteEmployeeAsync(EmployeeData.Employee employee) {
             return base.Channel.DeleteEmployeeAsync(employee);
-        }
-        
-        public void ChangeDB(string connectionName) {
-            base.Channel.ChangeDB(connectionName);
-        }
-        
-        public System.Threading.Tasks.Task ChangeDBAsync(string connectionName) {
-            return base.Channel.ChangeDBAsync(connectionName);
         }
     }
 }

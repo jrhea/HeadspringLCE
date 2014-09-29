@@ -7,10 +7,15 @@ using EmployeeData.CustomAttributes;
 
 namespace EmployeeDirectory.Utilities
 {
+    /// <summary>
+    /// Handy extension methods the Type class to assist in reflection.
+    /// </summary>
     public static class ExtensionMethods
     {
-        //This extension method finds properties of a class that are decorated with Attributes
-        //of type T (extends IAttribute) with Value property of type S equal to s
+        /// <summary>
+        ///  This extension method finds properties of a class that are decorated with Attributes
+        ///  of type T (extends IAttribute) with Value property of type S equal to s
+        /// </summary>
         public static List<PropertyInfo> getMatchingProperties<T, S>(this Type type, S value) where T : class, IAttribute<S>
         {
             List<PropertyInfo> result = new List<PropertyInfo>();
@@ -30,8 +35,10 @@ namespace EmployeeDirectory.Utilities
             }
             return result;
         }
-        //This extension method finds properties of a class that are decorated with Attributes
-        //of type T  with Value property of type S equal to s
+        /// <summary>
+        ///This extension method finds properties of a class that are decorated with Attributes
+        ///of type T  with Value property of type S equal to s
+        /// </summary>
         public static List<PropertyInfo> getMatchingProperties<T,S>(this Type type, S value, String propertyName) where T: class
         {
             List<PropertyInfo> result = new List<PropertyInfo>();
@@ -50,9 +57,10 @@ namespace EmployeeDirectory.Utilities
             }
             return result;
         }
-
-        //This extension method finds properties of a class that are decorated with Attributes
-        //of type T (extends IAttribute) with Value property of type S equal to s
+        /// <summary>
+        ///This extension method finds properties of a class that are decorated with Attributes
+        ///of type T (extends IAttribute) with Value property of type S equal to s
+        /// </summary>
         public static List<PropertyInfo> getMatchingProperties<T>(this Type type) where T : class
         {
             List<PropertyInfo> result = new List<PropertyInfo>();

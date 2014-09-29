@@ -43,12 +43,6 @@
   <wsdl:message name="IEmployeeService_DeleteEmployee_OutputMessage">
     <wsdl:part name="parameters" element="tns:DeleteEmployeeResponse" />
   </wsdl:message>
-  <wsdl:message name="IEmployeeService_ChangeDB_InputMessage">
-    <wsdl:part name="parameters" element="tns:ChangeDB" />
-  </wsdl:message>
-  <wsdl:message name="IEmployeeService_ChangeDB_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ChangeDBResponse" />
-  </wsdl:message>
   <wsdl:portType name="IEmployeeService">
     <wsdl:operation name="GetAllEmployees">
       <wsdl:input wsaw:Action="http://tempuri.org/IEmployeeService/GetAllEmployees" message="tns:IEmployeeService_GetAllEmployees_InputMessage" />
@@ -73,10 +67,6 @@
     <wsdl:operation name="DeleteEmployee">
       <wsdl:input wsaw:Action="http://tempuri.org/IEmployeeService/DeleteEmployee" message="tns:IEmployeeService_DeleteEmployee_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IEmployeeService/DeleteEmployeeResponse" message="tns:IEmployeeService_DeleteEmployee_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ChangeDB">
-      <wsdl:input wsaw:Action="http://tempuri.org/IEmployeeService/ChangeDB" message="tns:IEmployeeService_ChangeDB_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IEmployeeService/ChangeDBResponse" message="tns:IEmployeeService_ChangeDB_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IEmployeeService" type="tns:IEmployeeService">
@@ -128,15 +118,6 @@
     </wsdl:operation>
     <wsdl:operation name="DeleteEmployee">
       <soap:operation soapAction="http://tempuri.org/IEmployeeService/DeleteEmployee" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ChangeDB">
-      <soap:operation soapAction="http://tempuri.org/IEmployeeService/ChangeDB" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

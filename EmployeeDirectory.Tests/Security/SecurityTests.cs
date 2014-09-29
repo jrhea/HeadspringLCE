@@ -7,12 +7,19 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using EmployeeDirectory;
 using EmployeeDirectory.Controllers;
 using EmployeeData;
-namespace EmployeeDirectory.Tests.Security
+namespace UnitTests.Security
 {
+    /// <summary>
+    /// Unit tests for view security.  Since the security is based on .Net
+    /// Since the view security relies entirely on .Net AuthorizationAttribute component,
+    /// the unit tests are written to ensure that the proper views are decorated.
+    /// </summary>
     [TestClass]
     public class SecurityTests
     {
-
+        /// <summary>
+        /// Test passes if the create view is decorated with the AuthorizeAttribute.
+        /// </summary>
         [TestMethod]
         public void CreateViewAccess()
         {
@@ -23,6 +30,9 @@ namespace EmployeeDirectory.Tests.Security
             Assert.IsTrue(attributes.Any());
         }
 
+        /// <summary>
+        /// Test passes if the edit view is decorated with the AuthorizeAttribute.
+        /// </summary>
         [TestMethod]
         public void EditViewAccess()
         {
@@ -33,6 +43,9 @@ namespace EmployeeDirectory.Tests.Security
             Assert.IsTrue(attributes.Any());
         }
 
+        /// <summary>
+        /// Test passes if the delete view is decorated with the AuthorizeAttribute.
+        /// </summary>
         [TestMethod]
         public void DeleteViewAccess()
         {

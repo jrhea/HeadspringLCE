@@ -20,6 +20,9 @@ using System.Diagnostics;
 
 namespace EmployeeDirectory.Controllers
 {
+    /// <summary>
+    /// Controller class for the employee views.
+    /// </summary>
     public class EmployeesController : Controller
     {
         private List<String> _categoryDisplayNames;
@@ -27,6 +30,9 @@ namespace EmployeeDirectory.Controllers
         EmployeeServiceRef.EmployeeServiceClient _esc;
         ModelHelper _modelHelper;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public EmployeesController()
         {
             _categoryDisplayNames = null;
@@ -34,6 +40,10 @@ namespace EmployeeDirectory.Controllers
             InitializeSession();
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="username">Username can be passed in to establish an identity for unit tests.</param>
         public EmployeesController(string username)
         {
             _categoryDisplayNames = null;
@@ -41,7 +51,19 @@ namespace EmployeeDirectory.Controllers
             InitializeSession();
         }
 
-        // GET: Employees
+        /// <summary>
+        /// GET: Employees
+        /// Main view of the directory that displays the employees. Allows for paging and filtering.
+        /// **NOTE**
+        /// This uses reflection to determine the fields that are "filterable" in the view object.
+        /// The code is entirely generic.
+        /// </summary>
+        /// <param name="category">Category to filter on</param>
+        /// <param name="currentFilter">Assists in filter paginated records.</param>
+        /// <param name="searchString">Filtering criteria entered by user.</param>
+        /// <param name="page">Used for pagination</param>
+        /// <returns></returns>
+
         public ActionResult Index(string category, string currentFilter, string searchString, int? page)
         {
             ViewResult result;
@@ -101,8 +123,17 @@ namespace EmployeeDirectory.Controllers
 
             return result;
         }
+        
+       
 
-        // GET: Employees/Details/5
+
+        /// <summary>
+        ///  GET: Employees/Details/5
+        ///  This view shows the details of an individual employee.
+        /// </summary>
+        /// <param name="id">Id of employee to display.</param>
+        /// <returns></returns>
+
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -117,7 +148,11 @@ namespace EmployeeDirectory.Controllers
             return View(_modelHelper);
         }
 
-        // GET: Employees/Create
+        /// <summary>
+        ///  GET: Employees/Create
+        ///  This view provides a way to add a new user to the system.
+        /// </summary>
+        /// <returns></returns>
         [CustomAuthorize(Roles = "HR")]
         public ActionResult Create()
         {
@@ -125,9 +160,13 @@ namespace EmployeeDirectory.Controllers
             return View();
         }
 
-        // POST: Employees/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
+        /// <summary>
+        /// POST: Employees/Create
+        /// The POST of the newly created Employee record.
+        /// </summary>
+        /// <param name="employee">New employee record</param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         [CustomAuthorize(Roles = "HR")]
@@ -143,7 +182,12 @@ namespace EmployeeDirectory.Controllers
             return View(_modelHelper);
         }
 
-        // GET: Employees/Edit/5
+        /// <summary>
+        ///  GET: Employees/Edit/5
+        ///  Edit an individual employee record.
+        /// </summary>
+        /// <param name="id">Id of the employee to edit.</param>
+        /// <returns></returns>
         [CustomAuthorize(Roles = "HR")]
         public ActionResult Edit(int? id)
         {
@@ -161,9 +205,13 @@ namespace EmployeeDirectory.Controllers
             return View(_modelHelper.Employee);
         }
 
-        // POST: Employees/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+       
+        /// <summary>
+        /// POST: Employees/Edit/5
+        /// POST of the newly edited employee record.
+        /// </summary> 
+        /// <param name="employee">Employee record that was edited.</param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         [CustomAuthorize(Roles = "HR")]
@@ -178,7 +226,13 @@ namespace EmployeeDirectory.Controllers
             return View(employee);
         }
 
-        // GET: Employees/Delete/5
+        /// <summary>
+        ///  GET: Employees/Delete/5
+        ///  Delete an employee from the DB.
+        /// </summary>
+        /// <param name="id">Id of the employee to be deleted.</param>
+        /// <returns></returns>
+
         [CustomAuthorize(Roles = "HR")]
         public ActionResult Delete(int? id)
         {
@@ -194,7 +248,12 @@ namespace EmployeeDirectory.Controllers
             return View(employee);
         }
 
-        // POST: Employees/Delete/5
+        /// <summary>
+        ///  POST: Employees/Delete/5
+        ///  Confirmation of deleted employee record.
+        /// </summary>
+        /// <param name="id">Id of the employee record to be deleted.</param>
+        /// <returns></returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [CustomAuthorize(Roles = "HR")]
@@ -205,6 +264,9 @@ namespace EmployeeDirectory.Controllers
             return RedirectToAction("Index");
         }
 
+        /// <summary>
+        /// Helper method to initialize session state.
+        /// </summary>
         protected void InitializeSession()
         {
             _esc = new EmployeeServiceRef.EmployeeServiceClient();
@@ -220,6 +282,9 @@ namespace EmployeeDirectory.Controllers
             EstablishSessionIdentity();
         }
 
+        /// <summary>
+        /// Helper method to establish the identity of the current user.
+        /// </summary>
         public void EstablishSessionIdentity()
         {
             try
@@ -236,6 +301,10 @@ namespace EmployeeDirectory.Controllers
             }
         }
 
+        /// <summary>
+        /// Cleanup!
+        /// </summary>
+        /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
             _esc.Close();

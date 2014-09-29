@@ -23,6 +23,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -94,6 +96,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\EmployeeData.Employee.datasource" />
+    <None Include="Properties\DataSources\EmployeeData.Role.datasource" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -110,7 +114,7 @@
       <Name>EmployeeData</Name>
     </ProjectReference>
     <ProjectReference Include="..\EmployeeDirectory\EmployeeDirectory.csproj">
-      <Project>{FF9CF465-5467-4845-B6D2-E757640F9791}</Project>
+      <Project>{25c15bce-62b2-4c85-869c-6f444c7feeed}</Project>
       <Name>EmployeeDirectory</Name>
     </ProjectReference>
   </ItemGroup>

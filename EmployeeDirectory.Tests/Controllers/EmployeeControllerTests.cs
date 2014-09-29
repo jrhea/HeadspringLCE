@@ -8,11 +8,17 @@ using EmployeeDirectory;
 using EmployeeDirectory.Controllers;
 using EmployeeData;
 
-namespace EmployeeDirectory.Tests.Controllers
+namespace UnitTests.Controllers
 {
+    /// <summary>
+    /// Unit tests for views.
+    /// </summary>
     [TestClass]
     public class ViewTests
     {
+        /// <summary>
+        ///  Passes if the index view is returned successfully.
+        /// </summary>
         [TestMethod]
         public void IndexView()
         {
@@ -26,6 +32,9 @@ namespace EmployeeDirectory.Tests.Controllers
             Assert.IsNotNull(result);
         }
 
+        /// <summary>
+        /// Passes if the details view is returned successfully.
+        /// </summary>
         [TestMethod]
         public void DetailsView()
         {
@@ -39,6 +48,9 @@ namespace EmployeeDirectory.Tests.Controllers
             Assert.IsNotNull(result);
         }
 
+        /// <summary>
+        /// Passes if the create view is returned successfully.
+        /// </summary>
         [TestMethod]
         public void CreateView()
         {
@@ -52,6 +64,9 @@ namespace EmployeeDirectory.Tests.Controllers
             Assert.IsNotNull(result);
         }
 
+        /// <summary>
+        /// Passes if the edit view is returned successfully.
+        /// </summary>
         [TestMethod]
         public void EditView()
         {
@@ -65,6 +80,9 @@ namespace EmployeeDirectory.Tests.Controllers
             Assert.IsNotNull(result);
         }
 
+        /// <summary>
+        /// Passes if the delete view is returned successfully.
+        /// </summary>
         [TestMethod]
         public void DeleteView()
         {

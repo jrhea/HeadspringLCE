@@ -1,0 +1,4 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$interface_employee_service_1_1_interfaces_1_1_i_employee_service.html" title="This is the communication interface (contract) between client and server communication ..." alt="" coords="5,5,192,47"/>
+<area shape="rect" id="node2" href="$class_employee_service_1_1_employee_server.html" title="This is the Employee Server (Service) " alt="" coords="240,5,424,47"/>
+</map>

@@ -10,10 +10,17 @@ using EmployeeData;
 
 namespace EmployeeDirectory.Tests.Service
 {
+    /// <summary>
+    /// Unit tests for the service layer.
+    /// </summary>
     [TestClass]
     public class ServiceTests
     {
         private static int _testId;
+
+        /// <summary>
+        /// Test passes if a employee is successfully created.
+        /// </summary>
         [TestMethod]
         public void CreateTest()
         {
@@ -33,6 +40,9 @@ namespace EmployeeDirectory.Tests.Service
             Assert.IsTrue(_testId != -1);
         }
 
+        /// <summary>
+        /// Test passes if a employee is successfully returned.
+        /// </summary>
         [TestMethod]
         public void GetTest()
         {
@@ -41,6 +51,9 @@ namespace EmployeeDirectory.Tests.Service
             Assert.IsNotNull(employee);
         }
 
+        /// <summary>
+        /// Test passes if a list of employees are returned.
+        /// </summary>
         [TestMethod]
         public void GetAllTest()
         {
@@ -50,6 +63,9 @@ namespace EmployeeDirectory.Tests.Service
             Assert.IsTrue(employees.Count > 0);
         }
 
+        /// <summary>
+        /// Test passes if an employee record is successfully updated.
+        /// </summary>
         [TestMethod]
         public void UpdateTest()
         {
@@ -62,6 +78,9 @@ namespace EmployeeDirectory.Tests.Service
             Assert.IsTrue(employee.FirstName == "Donny");
         }
 
+        /// <summary>
+        /// Test passes is an employee record is successfully deleted.
+        /// </summary>
         [TestMethod]
         public void DeleteTest()
         {

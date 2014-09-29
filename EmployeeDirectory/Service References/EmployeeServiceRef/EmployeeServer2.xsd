@@ -77,16 +77,4 @@
       <xs:sequence />
     </xs:complexType>
   </xs:element>
-  <xs:element name="ChangeDB">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="connectionName" nillable="true" type="xs:string" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="ChangeDBResponse">
-    <xs:complexType>
-      <xs:sequence />
-    </xs:complexType>
-  </xs:element>
 </xs:schema>
