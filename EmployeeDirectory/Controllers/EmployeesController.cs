@@ -292,6 +292,12 @@ namespace EmployeeDirectory.Controllers
                 if (_username.Equals(String.Empty))
                 {
                     _username = WindowsIdentity.GetCurrent().Name.Split(new string[1] { "\\" }, StringSplitOptions.None)[1];
+#if DEBUG
+                    if (_username.Equals(System.Web.Configuration.WebConfigurationManager.AppSettings["DeveloperName"]))
+                    {
+                        _username = System.Web.Configuration.WebConfigurationManager.AppSettings["DeveloperOverride"];
+                    }
+#endif
                 }
                 _modelHelper.SessionIdentity = _esc.GetEmployee(Convert.ToInt32(_username));
             }

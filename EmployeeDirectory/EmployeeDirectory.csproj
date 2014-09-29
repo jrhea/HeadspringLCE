@@ -182,6 +182,7 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+    <Content Include="Views\Shared\51d.gif" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
